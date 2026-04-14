@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulations Commerciales – Street Marketing</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    padding: 30px 40px;
+    color: white;
+    border-bottom: 4px solid #e94560;
+  }
+  .header h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: 1px; }
+  .header p { color: #a0aec0; margin-top: 6px; font-size: 0.9rem; }
+
+  /* ONGLETS NAV */
+  .tabs-nav {
+    display: flex;
+    background: #16213e;
+    padding: 0 40px;
+    gap: 4px;
+    overflow-x: auto;
+  }
+  .tab-btn {
+    padding: 14px 22px;
+    border: none;
+    background: transparent;
+    color: #a0aec0;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    letter-spacing: 0.5px;
+  }
+  .tab-btn:hover { color: white; }
+  .tab-btn.active { color: #e94560; border-bottom-color: #e94560; }
+
+  /* CONTENU ONGLETS */
+  .tab-content { display: none; padding: 30px 40px; max-width: 1100px; margin: 0 auto; }
+  .tab-content.active { display: block; }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-right: 6px;
+  }
+  .badge-outbound { background: #fed7d7; color: #c53030; }
+  .badge-inbound { background: #c6f6d5; color: #276749; }
+  .badge-diff { background: #fefcbf; color: #744210; }
+
+  /* CARDS */
+  .card {
+    background: white;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    border-left: 4px solid #e94560;
+  }
+  .card.blue { border-left-color: #3182ce; }
+  .card.green { border-left-color: #38a169; }
+  .card.orange { border-left-color: #dd6b20; }
+  .card.purple { border-left-color: #805ad5; }
+  .card.yellow { border-left-color: #d69e2e; }
+
+  .card h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #1a1a2e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #4a5568;
+    margin: 14px 0 8px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* GRILLE INFO */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .info-item {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .info-item .label {
+    font-size: 0.72rem;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .info-item .value {
+    font-size: 0.9rem;
+    color: #1a1a2e;
+    font-weight: 600;
+    margin-top: 3px;
+  }
+
+  /* COMPORTEMENT */
+  .behavior-item {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-left: 3px solid #805ad5;
+  }
+  .behavior-item .trigger {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #805ad5;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+  .behavior-item .reaction {
+    font-size: 0.88rem;
+    color: #2d3748;
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  /* OBJECTIONS */
+  .objection-item {
+    background: #fff5f5;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+    border-left: 3px solid #e94560;
+  }
+  .objection-item .obj-text {
+    font-size: 0.88rem;
+    color: #c53030;
+    font-style: italic;
+    font-weight: 600;
+  }
+  .objection-item .obj-context {
+    font-size: 0.82rem;
+    color: #718096;
+    margin-top: 4px;
+  }
+
+  /* MEDDPICC */
+  .meddpicc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .meddpicc-item {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+  .meddpicc-letter {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #e94560;
+  }
+  .meddpicc-label {
+    font-size: 0.72rem;
+    color: #718096;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .meddpicc-value {
+    font-size: 0.85rem;
+    color: #2d3748;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* SPIN */
+  .spin-section { margin-top: 8px; }
+  .spin-category {
+    background: #f7fafc;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 12px;
+  }
+  .spin-category h4 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .spin-category.situation h4 { color: #3182ce; }
+  .spin-category.problem h4 { color: #dd6b20; }
+  .spin-category.implication h4 { color: #e94560; }
+  .spin-category.need h4 { color: #38a169; }
+
+  .spin-q {
+    font-size: 0.85rem;
+    color: #4a5568;
+    font-style: italic;
+    margin-bottom: 6px;
+    padding-left: 10px;
+    border-left: 2px solid #e2e8f0;
+  }
+
+  /* TEXTAREA NOTES */
+  .notes-area {
+    width: 100%;
+    min-height: 80px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 0.85rem;
+    font-family: 'Segoe UI', sans-serif;
+    color: #2d3748;
+    resize: vertical;
+    transition: border 0.2s;
+    margin-top: 8px;
+  }
+  .notes-area:focus { outline: none; border-color: #e94560; }
+
+  /* NOTATION */
+  .notation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .notation-item {
+    background: #f7fafc;
+    border-radius: 8px;
+    padding: 12px 16px;
+  }
+  .notation-item label {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .stars { display: flex; gap: 4px; }
+  .star {
+    width: 24px; height: 24px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #e2e8f0;
+    transition: color 0.15s;
+  }
+  .star.active { color: #f6ad55; }
+
+  .score-display {
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+  }
+  .score-display .score-label { font-size: 0.85rem; color: #a0aec0; }
+  .score-display .score-value { font-size: 2rem; font-weight: 800; color: #e94560; }
+
+  /* SEPARATOR */
+  .section-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #718096;
+    margin: 24px 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+
+  /* CONTEXTE PRE-CALL */
+  .pretext-box {
+    background: linear-gradient(135deg, #ebf8ff, #bee3f8);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    border-left: 4px solid #3182ce;
+  }
+  .pretext-box p { font-size: 0.88rem; color: #2c5282; line-height: 1.6; }
+  .pretext-box strong { color: #1a365d; }
+
+  /* FORMULAIRE */
+  .typeform-box {
+    background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 8px;
+    border-left: 4px solid #38a169;
+  }
+  .typeform-box p { font-size: 0.88rem; color: #276749; line-height: 1.8; }
+
+  /* SCENARIO HEADER */
+  .scenario-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .scenario-title { font-size: 1.5rem; font-weight: 800; color: #1a1a2e; }
+  .scenario-subtitle { font-size: 0.9rem; color: #718096; margin-top: 4px; }
+
+  .diff-badge {
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    color: white;
+    border-radius: 10px;
+    padding: 10px 18px;
+    text-align: center;
+  }
+  .diff-badge .diff-num { font-size: 1.8rem; font-weight: 800; color: #e94560; line-height: 1; }
+  .diff-badge .diff-label { font-size: 0.7rem; color: #a0aec0; margin-top: 2px; }
+
+  @media (max-width: 600px) {
+    .tabs-nav { padding: 0 10px; }
+    .tab-content { padding: 20px 16px; }
+    .header { padding: 20px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>🎯 Simulations Commerciales – Street Marketing</h1>
+  <p>4 scénarios de jeu de rôle · Outbound & Inbound · Niveau R1</p>
+</div>
+
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="showTab('s1')">🏢 Nexity · Outbound</button>
+  <button class="tab-btn" onclick="showTab('s2')">🥤 Tropicana · Outbound</button>
+  <button class="tab-btn" onclick="showTab('s3')">🏠 Azur Habitat · Inbound</button>
+  <button class="tab-btn" onclick="showTab('s4')">💪 FitZone · Inbound</button>
+</div>
+
+<!-- ===================== SCÉNARIO 1 : NEXITY ===================== -->
+<div id="s1" class="tab-content active">
+
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-title">🏢 Marc Delorme – Nexity Marseille</div>
+      <div class="scenario-subtitle">Directeur d'Agence · Programme "Les Terrasses du Prado"</div>
+      <div style="margin-top:10px">
+        <span class="badge badge-outbound">OUTBOUND</span>
+        <span class="badge badge-diff">Difficulté : 8/10</span>
+      </div>
+    </div>
+    <div class="diff-badge">
+      <div class="diff-num">8</div>
+      <div class="diff-label">/10 difficulté</div>
+    </div>
+  </div>
+
+  <!-- CONTEXTE SALES -->
+  <div class="section-title">📋 Contexte pour le commercial (avant l'appel)</div>
+  <div class="pretext-box">
+    <p>
+      Tu as eu <strong>Marc Delorme</strong> au téléphone il y a 5 jours, 2 minutes chrono. 
+      Il sortait d'une réunion. Il t'a dit : <em>"Je travaille déjà avec quelqu'un mais bon, appelez-moi jeudi, j'ai 30 minutes."</em><br><br>
+      Ce que tu sais : il est <strong>Directeur d'Agence Nexity Marseille 8ème</strong>. Son programme en cours s'appelle 
+      <strong>"Les Terrasses du Prado"</strong> – 42 appartements T2/T3, livraison Q3 2025. 
+      D'après ce que tu as pu chercher, il reste une quinzaine de lots non vendus, 
+      ce qui commence à être problématique pour Nexity dans un marché marseillais tendu.<br><br>
+      Son agence actuelle : <strong>Mediapost</strong> – distribution BAL classique sur zones, pas de ciblage fin, 
+      reporting basique (volumes distribués, pas de retours qualifiés). 
+      Il a mentionné être <em>"pas forcément satisfait"</em> sans développer.
+    </p>
+  </div>
+
+  <!-- FICHE CLIENT (POUR TOI) -->
+  <div class="section-title">🎭 Fiche client – Pour le formateur (jouer Marc)</div>
+  <div class="card blue">
+    <h2>👤 Qui est Marc Delorme ?</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="label">Poste</div><div class="value">Directeur Agence Nexity</div></div>
+      <div class="info-item"><div class="label">Âge estimé</div><div class="value">47 ans</div></div>
+      <div class="info-item"><div class="label">Ancienneté</div><div class="value">12 ans chez Nexity</div></div>
+      <div class="info-item"><div class="label">Reporting à</div><div class="value">Directeur Régional PACA</div></div>
+    </div>
+
+    <h3>🏗️ Situation réelle (que le sales ne sait pas encore)</h3>
+    <ul style="font-size:0.88rem; color:#2d3748; line-height:2; padding-left:18px;">
+      <li>17 lots non vendus sur 42 → pression du DR en réunion mensuelle</li>
+      <li>Délai de commercialisation dépassé de 4 mois vs prévisions</li>
+      <li>Mediapost : 80 000 flyers distribués les 3 derniers mois → <strong>0 lead tracké</strong></li>
+      <li>Budget marketing Q4 encore disponible : ~8 000€ non consommés</li>
+      <li>Un concurrent (Bouygues Immo) vient d'ouvrir un programme à 300m</li>
+      <li>Décision : Marc peut valider seul jusqu'à 5 000€, au-delà → DR</li>
+    </ul>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <div class="card purple">
+    <h2>🧠 Comportement & Réactions situationnelles</h2>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial arrive sans avoir fait ses devoirs</div>
+      <div class="reaction">Marc coupe court : <em>"Vous connaissez le marché marseillais ? Vous savez ce qu'on vend ?"</em> – Ton sec, il teste immédiatement si l'interlocuteur mérite ses 30 minutes.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial mentionne Mediapost spontanément</div>
+      <div class="reaction">Marc se détend légèrement : <em>"Ouais, on les utilise depuis 2 ans… c'est bien mais c'est du volume sans finesse."</em> – Il commence à s'ouvrir sur la frustration.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si on parle de tracking / mesure des résultats</div>
+      <div class="reaction">Intérêt visible : <em>"Parce que là honnêtement, je distribue dans le vent. Je sais même pas si quelqu'un lit ces trucs."</em> – C'est son pain point principal.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial pose des questions sur les lots restants</div>
+      <div class="reaction">Marc hésite 2 secondes puis lâche les chiffres : <em>"On a encore une quinzaine de lots… le DR commence à me demander des comptes."</em> – Il ne le dit pas d'emblée mais c'est la pression principale.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle de budget sans avoir qualifié le besoin</div>
+      <div class="reaction">Fermeture immédiate : <em>"Attendez on va pas mettre la charrue avant les bœufs. Dites-moi d'abord ce que vous faites de différent."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si la solution proposée est concrète et inclut du ciblage géo + tracking</div>
+      <div class="reaction">Marc pose des questions précises sur la logistique : <em>"Et vous ciblez comment ? Par îlot ? Par tranche d'âge ?"</em> – Signe d'intérêt réel, il commence à projeter.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">En fin de call, si le commercial a bien qualifié</div>
+      <div class="reaction">Marc conclut : <em>"Okay, envoyez-moi quelque chose de concret. Mais soyez précis, j'ai pas le temps pour les plaquettes génériques."</em></div>
+    </div>
+  </div>
+
+  <!-- OBJECTIONS -->
+  <div class="card">
+    <h2>💬 Objections clés</h2>
+
+    <div class="objection-item">
+      <div class="obj-text">"Mediapost fait déjà ça, et c'est moins cher."</div>
+      <div class="obj-context">À sortir dès que le commercial parle de distribution BAL, sans différencier. Attend qu'on lui parle de tracking, ciblage ou résultats.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Comment vous prouvez que ça ramène des visites ?"</div>
+      <div class="obj-context">Son obsession. Il a dépensé sans mesurer avec Mediapost. Si pas de réponse solide sur le tracking → deal bloqué.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"J'ai pas de budget supplémentaire à ce stade."</div>
+      <div class="obj-context">Faux. Il a 8 000€ non consommés mais il ne le dira que si le commercial a créé de la valeur. À débloquer via l'enjeu (pression DR, lots en stock).</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Le timing est pas idéal, on est en fin d'année."</div>
+      <div class="obj-context">Sortie si le commercial ne crée pas d'urgence. Rebond possible : la livraison Q3 approche, chaque semaine compte.</div>
+    </div>
+  </div>
+
+  <!-- MEDDPICC -->
+  <div class="card green">
+    <h2>📊 MEDDPICC – Ce que le commercial doit valider</h2>
+    <div class="meddpicc-grid">
+      <div class="meddpicc-item"><div class="meddpicc-letter">M</div><div class="meddpicc-label">Metrics</div><div class="meddpicc-value">Nbre de lots vendus / leads générés par campagne</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">E</div><div class="meddpicc-label">Economic Buyer</div><div class="meddpicc-value">Marc seul jusqu'à 5K€. Au-delà : DR PACA</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Criteria</div><div class="meddpicc-value">Tracking mesurable + ciblage géo précis</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Process</div><div class="meddpicc-value">Devis → validation Marc → démarrage sous 2 sem</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">P</div><div class="meddpicc-label">Pain</div><div class="meddpicc-value">17 lots invendus, pression DR, Mediapost inefficace</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">I</div><div class="meddpicc-label">Implication</div><div class="meddpicc-value">Échec commercialisation = revu objectifs DR + image</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Champion</div><div class="meddpicc-value">Marc lui-même si convaincu par les résultats chiffrés</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Competition</div><div class="meddpicc-value">Mediapost (sortant) + inaction</div></div>
+    </div>
+  </div>
+
+  <!-- SPIN -->
+  <div class="card yellow">
+    <h2>🔄 Méthode SPIN – Questions clés à poser</h2>
+    <div class="spin-section">
+
+      <div class="spin-category situation">
+        <h4>S – Situation</h4>
+        <div class="spin-q">"Vous faites appel à des agences pour votre distribution actuellement ?"</div>
+        <div class="spin-q">"C'est quoi votre dispositif marketing terrain en ce moment pour Les Terrasses du Prado ?"</div>
+        <div class="spin-q">"Vous êtes sur quelle zone de chalandise principalement pour ce programme ?"</div>
+      </div>
+
+      <div class="spin-category problem">
+        <h4>P – Problème</h4>
+        <div class="spin-q">"Vous avez une visibilité sur ce que ramènent vos distributions actuelles ?"</div>
+        <div class="spin-q">"Avec Mediapost, vous savez combien de visites ou de contacts ça génère ?"</div>
+        <div class="spin-q">"Est-ce que vous avez l'impression que vos flyers touchent les bons profils – les primo-accédants, les investisseurs ?"</div>
+      </div>
+
+      <div class="spin-category implication">
+        <h4>I – Implication</h4>
+        <div class="spin-q">"Si vous continuez à distribuer sans mesurer, vous pouvez justifier le budget marketing auprès de votre direction ?"</div>
+        <div class="spin-q">"Avec les lots qui restent et la livraison Q3 qui approche, ça vous laisse combien de temps réellement ?"</div>
+        <div class="spin-q">"Qu'est-ce qui se passe si on arrive à Q2 avec encore 10 lots non vendus ?"</div>
+      </div>
+
+      <div class="spin-category need">
+        <h4>N – Need Payoff</h4>
+        <div class="spin-q">"Si vous pouviez savoir exactement combien de visites sont générées par chaque campagne, ça changerait quoi dans votre façon d'arbitrer le budget ?"</div>
+        <div class="spin-q">"Un dispositif qui cible les bons foyers dans un rayon de 2km avec un code promo tracké – c'est le genre de chose qui vous parlerait ?"</div>
+        <div class="spin-q">"Si on vous montrait qu'on peut générer X visites qualifiées en 3 semaines, qu'est-ce qu'il vous faudrait pour qu'on avance ?"</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTES POST-CALL -->
+  <div class="section-title">✍️ Notes post-call – Débriefing SPIN</div>
+  <div class="card">
+    <h2>📝 Ce que le commercial a découvert</h2>
+
+    <h3>Situation identifiée</h3>
+    <textarea class="notes-area" placeholder="Ex : Utilise Mediapost depuis 2 ans, zone Marseille 8ème, 80K flyers/trimestre..."></textarea>
+
+    <h3>Problèmes mis en lumière</h3>
+    <textarea class="notes-area" placeholder="Ex : Aucun tracking, 0 lead qualifié, frustration sur le ROI..."></textarea>
+
+    <h3>Implications explorées</h3>
+    <textarea class="notes-area" placeholder="Ex : Pression DR, livraison Q3 imminente, concurrent Bouygues à 300m..."></textarea>
+
+    <h3>Need Payoff – Projection valeur</h3>
+    <textarea class="notes-area" placeholder="Ex : Très intéressé par le tracking, veut voir une proposition chiffrée..."></textarea>
+
+    <h3>Prochaine étape convenue</h3>
+    <textarea class="notes-area" placeholder="Ex : Envoi devis avant vendredi + call de validation lundi..."></textarea>
+  </div>
+
+  <!-- NOTATION -->
+  <div class="section-title">⭐ Notation de la simulation</div>
+  <div class="card">
+    <h2>🏆 Évaluation du commercial</h2>
+    <div class="notation-grid">
+
+      <div class="notation-item">
+        <label>Découverte du contexte</label>
+        <div class="stars" id="stars-s1-1">
+          <span class="star" onclick="rate('s1',1,1)">★</span>
+          <span class="star" onclick="rate('s1',1,2)">★</span>
+          <span class="star" onclick="rate('s1',1,3)">★</span>
+          <span class="star" onclick="rate('s1',1,4)">★</span>
+          <span class="star" onclick="rate('s1',1,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Questions SPIN (qualité)</label>
+        <div class="stars" id="stars-s1-2">
+          <span class="star" onclick="rate('s1',2,1)">★</span>
+          <span class="star" onclick="rate('s1',2,2)">★</span>
+          <span class="star" onclick="rate('s1',2,3)">★</span>
+          <span class="star" onclick="rate('s1',2,4)">★</span>
+          <span class="star" onclick="rate('s1',2,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Gestion des objections</label>
+        <div class="stars" id="stars-s1-3">
+          <span class="star" onclick="rate('s1',3,1)">★</span>
+          <span class="star" onclick="rate('s1',3,2)">★</span>
+          <span class="star" onclick="rate('s1',3,3)">★</span>
+          <span class="star" onclick="rate('s1',3,4)">★</span>
+          <span class="star" onclick="rate('s1',3,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>MEDDPICC validés</label>
+        <div class="stars" id="stars-s1-4">
+          <span class="star" onclick="rate('s1',4,1)">★</span>
+          <span class="star" onclick="rate('s1',4,2)">★</span>
+          <span class="star" onclick="rate('s1',4,3)">★</span>
+          <span class="star" onclick="rate('s1',4,4)">★</span>
+          <span class="star" onclick="rate('s1',4,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Prochaine étape obtenue</label>
+        <div class="stars" id="stars-s1-5">
+          <span class="star" onclick="rate('s1',5,1)">★</span>
+          <span class="star" onclick="rate('s1',5,2)">★</span>
+          <span class="star" onclick="rate('s1',5,3)">★</span>
+          <span class="star" onclick="rate('s1',5,4)">★</span>
+          <span class="star" onclick="rate('s1',5,5)">★</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="score-display">
+      <div>
+        <div class="score-label">Score global</div>
+        <div style="font-size:0.8rem; color:#718096; margin-top:2px">Moyenne des 5 critères</div>
+      </div>
+      <div class="score-value" id="score-s1">–</div>
+    </div>
+
+    <h3 style="margin-top:16px">Commentaire général du formateur</h3>
+    <textarea class="notes-area" placeholder="Points forts, axes d'amélioration, comportements notables..."></textarea>
+  </div>
+
+</div>
+<!-- FIN SCÉNARIO 1 -->
+
+
+<!-- ===================== SCÉNARIO 2 : TROPICANA ===================== -->
+<div id="s2" class="tab-content">
+
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-title">🥤 Sophie Arnaud – Tropicana France</div>
+      <div class="scenario-subtitle">Responsable Marketing Trade · Lancement gamme "Boost"</div>
+      <div style="margin-top:10px">
+        <span class="badge badge-outbound">OUTBOUND</span>
+        <span class="badge badge-diff">Difficulté : 8/10</span>
+      </div>
+    </div>
+    <div class="diff-badge">
+      <div class="diff-num">8</div>
+      <div class="diff-label">/10 difficulté</div>
+    </div>
+  </div>
+
+  <!-- CONTEXTE SALES -->
+  <div class="section-title">📋 Contexte pour le commercial (avant l'appel)</div>
+  <div class="pretext-box">
+    <p>
+      Tu as eu <strong>Sophie Arnaud</strong> au téléphone il y a une semaine, 3 minutes. 
+      Elle revenait d'un déjeuner. Elle t'a dit : <em>"On travaille déjà avec une agence pour le sampling mais je veux voir ce que vous proposez. Appelez-moi mardi matin."</em><br><br>
+      Ce que tu sais : elle est <strong>Responsable Marketing Trade chez Tropicana France</strong>, basée à Paris. 
+      Elle pilote les activations terrain sur le réseau GMS (grandes et moyennes surfaces) et les zones urbaines.<br><br>
+      Son agence actuelle : <strong>Actifeel</strong> – spécialiste du sampling terrain, bon réseau de merchandisers, 
+      mais elle a glissé dans la conversation qu'elle n'avait <em>"pas toujours les retours qu'elle voulait"</em>.<br><br>
+      Contexte marché : Tropicana lance dans <strong>6 semaines</strong> la gamme <strong>"Boost"</strong> – jus enrichis en vitamines, 
+      cœur de cible 25-40 ans actifs. Tu as vu une offre d'emploi pour un chef de produit "Boost" postée il y a 2 mois, 
+      et un post LinkedIn de Sophie sur <em>"l'activation terrain différenciante"</em>.
+    </p>
+  </div>
+
+  <!-- FICHE CLIENT -->
+  <div class="section-title">🎭 Fiche client – Pour le formateur (jouer Sophie)</div>
+  <div class="card blue">
+    <h2>👤 Qui est Sophie Arnaud ?</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="label">Poste</div><div class="value">Resp. Marketing Trade</div></div>
+      <div class="info-item"><div class="label">Âge estimé</div><div class="value">38 ans</div></div>
+      <div class="info-item"><div class="label">Ancienneté</div><div class="value">5 ans chez Tropicana</div></div>
+      <div class="info-item"><div class="label">Reporting à</div><div class="value">Directrice Marketing France</div></div>
+    </div>
+
+    <h3>🍊 Situation réelle (que le sales ne sait pas encore)</h3>
+    <ul style="font-size:0.88rem; color:#2d3748; line-height:2; padding-left:18px;">
+      <li>Budget sampling alloué pour "Boost" : <strong>35 000€</strong> sur 2 villes (Paris + Lyon)</li>
+      <li>Actifeel gère le contrat cadre mais Sophie n'est pas la décisionnaire seule – sa directrice doit valider</li>
+      <li>Reproche principal à Actifeel : reporting en fin de campagne seulement, pas de suivi temps réel</li>
+      <li>Cœur de cible : 25-40 ans actifs, zones transport (métro, RER, gares) + parcs urbains</li>
+      <li>Contrainte logistique forte : produit réfrigéré, chaîne du froid à respecter</li>
+      <li>Deadline non négociable : activation doit démarrer dans 6 semaines (date de lancement officiel)</li>
+      <li>Elle a déjà pitché Actifeel comme partenaire à sa directrice → ego impliqué</li>
+    </ul>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <div class="card purple">
+    <h2>🧠 Comportement & Réactions situationnelles</h2>
+
+    <div class="behavior-item">
+      <div class="trigger">En ouverture d'appel</div>
+      <div class="reaction">Sophie est cordiale mais directe : <em>"Vous avez 20 minutes, je vous écoute."</em> – Elle teste si le commercial structure son propos ou part dans une présentation générique.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle du lancement "Boost" en montrant qu'il a fait ses recherches</div>
+      <div class="reaction">Sophie marque un point positif : <em>"Vous avez fait vos devoirs, bien."</em> – Ton plus ouvert, elle commence à s'engager dans la conversation.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial ne mentionne pas la contrainte réfrigération</div>
+      <div class="reaction">Sophie la sort comme test : <em>"Le produit doit être maintenu entre 2 et 6 degrés. Comment vous gérez ça sur le terrain ?"</em> – Si le commercial n'a pas de réponse précise, méfiance.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle de reporting temps réel</div>
+      <div class="reaction">Intérêt marqué : <em>"C'est quoi concrètement ? Un dashboard ? Des photos terrain ? Des scans ?"</em> – C'est le point de frustration avec Actifeel, elle veut du concret.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial attaque Actifeel directement</div>
+      <div class="reaction">Sophie se ferme légèrement : <em>"Actifeel connaît nos process, faites attention à ce que vous dites."</em> – Elle a défendu ce partenaire en interne, ego en jeu.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial demande qui valide le budget final</div>
+      <div class="reaction">Sophie hésite : <em>"C'est moi qui pilote… mais sur ce montant, la directrice marketing valide aussi."</em> – Important pour le process de décision.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial propose un pilote sur une ville avant les 2</div>
+      <div class="reaction">Sophie réfléchit : <em>"C'est une option… mais si on fait Paris seulement, il faut quand même un dispositif béton."</em> – Ouverture progressive.</div>
+    </div>
+  </div>
+
+  <!-- OBJECTIONS -->
+  <div class="card">
+    <h2>💬 Objections clés</h2>
+
+    <div class="objection-item">
+      <div class="obj-text">"On travaille déjà avec Actifeel, ils connaissent nos process."</div>
+      <div class="obj-context">Objection de confort. À traiter par la valeur ajoutée différenciante (tracking, ciblage) sans dénigrer Actifeel.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Le timing est vraiment serré, 6 semaines c'est court pour changer d'agence."</div>
+      <div class="obj-context">Objection légitime. Rebond possible : proposition d'intervenir en complément d'Actifeel sur une ville, ou montrer une capacité de démarrage rapide.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Comment vous gérez la chaîne du froid sur 8h de distribution ?"</div>
+      <div class="obj-context">Question technique. Si le commercial ne sait pas répondre précisément → perd la crédibilité. Préparer une réponse logistique solide.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Votre reporting, c'est quoi concrètement ? Parce que tout le monde dit 'tableau de bord'."</div>
+      <div class="obj-context">Elle a été déçue par des promesses vagues. Attend du concret : photos géolocalisées, comptage en temps réel, rapport par demi-journée.</div>
+    </div>
+  </div>
+
+  <!-- MEDDPICC -->
+  <div class="card green">
+    <h2>📊 MEDDPICC – Ce que le commercial doit valider</h2>
+    <div class="meddpicc-grid">
+      <div class="meddpicc-item"><div class="meddpicc-letter">M</div><div class="meddpicc-label">Metrics</div><div class="meddpicc-value">Nbre d'échantillons distribués, taux de prise, contacts qualifiés</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">E</div><div class="meddpicc-label">Economic Buyer</div><div class="meddpicc-value">Sophie + Directrice Marketing France (co-validation)</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Criteria</div><div class="meddpicc-value">Logistique réfrigérée + reporting temps réel + ciblage urbain</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Process</div><div class="meddpicc-value">Sophie propose → Directrice valide → contrat sous 2 sem</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">P</div><div class="meddpicc-label">Pain</div><div class="meddpicc-value">Reporting déficient Actifeel + pression timeline lancement</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">I</div><div class="meddpicc-label">Implication</div><div class="meddpicc-value">Lancement raté = visibilité produit insuffisante en GMS dès J1</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Champion</div><div class="meddpicc-value">Sophie si elle peut défendre un reporting différenciant à sa directrice</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Competition</div><div class="meddpicc-value">Actifeel (sortant) + inaction (rester sur Actifeel seul)</div></div>
+    </div>
+  </div>
+
+  <!-- SPIN -->
+  <div class="card yellow">
+    <h2>🔄 Méthode SPIN – Questions clés à poser</h2>
+    <div class="spin-section">
+
+      <div class="spin-category situation">
+        <h4>S – Situation</h4>
+        <div class="spin-q">"Pour le lancement Boost, vous avez déjà un dispositif terrain en place ou vous êtes encore en train de le construire ?"</div>
+        <div class="spin-q">"Vos activations sampling actuellement, elles couvrent quelles zones – gares, centres commerciaux, parcs ?"</div>
+        <div class="spin-q">"Le budget activation pour ce lancement, il est déjà alloué ou encore en discussion interne ?"</div>
+      </div>
+
+      <div class="spin-category problem">
+        <h4>P – Problème</h4>
+        <div class="spin-q">"Sur vos campagnes sampling passées, vous avez eu de la visibilité en temps réel sur ce qui se passait terrain ?"</div>
+        <div class="spin-q">"Comment vous évaluez aujourd'hui qu'un sampling a bien performé – vous avez des KPIs définis ?"</div>
+        <div class="spin-q">"La chaîne du froid sur des distributions de plusieurs heures, c'est quelque chose que votre agence actuelle gère sans friction ?"</div>
+      </div>
+
+      <div class="spin-category implication">
+        <h4>I – Implication</h4>
+        <div class="spin-q">"Avec 6 semaines avant le lancement, si le dispositif terrain n'est pas cadré dans les 2 prochaines semaines, vous êtes dans les temps ?"</div>
+        <div class="spin-q">"Si le reporting arrive seulement en fin de campagne, comment vous justifiez le ROI à votre directrice pendant l'activation ?"</div>
+        <div class="spin-q">"Un produit réfrigéré mal géré sur le terrain – qu'est-ce que ça implique en termes d'image au moment du lancement ?"</div>
+      </div>
+
+      <div class="spin-category need">
+        <h4>N – Need Payoff</h4>
+        <div class="spin-q">"Si vous aviez un suivi par demi-journée avec photos géolocalisées et comptage en temps réel – ça vous permettrait de piloter comment ?"</div>
+        <div class="spin-q">"Un partenaire qui peut démarrer sous 3 semaines avec un process logistique réfrigéré rodé – c'est ce qu'il vous faut pour ce lancement ?"</div>
+        <div class="spin-q">"Si on vous prouve sur Paris en semaine 1 que le dispositif tient, vous avez de quoi convaincre votre directrice pour Lyon ?"</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTES POST-CALL -->
+  <div class="section-title">✍️ Notes post-call – Débriefing SPIN</div>
+  <div class="card">
+    <h2>📝 Ce que le commercial a découvert</h2>
+
+    <h3>Situation identifiée</h3>
+    <textarea class="notes-area" placeholder="Ex : Budget 35K€, 2 villes, lancement dans 6 sem, Actifeel en place..."></textarea>
+
+    <h3>Problèmes mis en lumière</h3>
+    <textarea class="notes-area" placeholder="Ex : Reporting Actifeel insuffisant, pas de temps réel, inquiétude chaîne froid..."></textarea>
+
+    <h3>Implications explorées</h3>
+    <textarea class="notes-area" placeholder="Ex : Deadline non négociable, justification ROI à directrice, risque image produit..."></textarea>
+
+    <h3>Need Payoff – Projection valeur</h3>
+    <textarea class="notes-area" placeholder="Ex : Très sensible au reporting temps réel, ouverte à un pilote Paris..."></textarea>
+
+    <h3>Prochaine étape convenue</h3>
+    <textarea class="notes-area" placeholder="Ex : Proposition pilote Paris envoyée vendredi + call avec directrice semaine prochaine..."></textarea>
+  </div>
+
+  <!-- NOTATION -->
+  <div class="section-title">⭐ Notation de la simulation</div>
+  <div class="card">
+    <h2>🏆 Évaluation du commercial</h2>
+    <div class="notation-grid">
+
+      <div class="notation-item">
+        <label>Découverte du contexte</label>
+        <div class="stars" id="stars-s2-1">
+          <span class="star" onclick="rate('s2',1,1)">★</span>
+          <span class="star" onclick="rate('s2',1,2)">★</span>
+          <span class="star" onclick="rate('s2',1,3)">★</span>
+          <span class="star" onclick="rate('s2',1,4)">★</span>
+          <span class="star" onclick="rate('s2',1,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Questions SPIN (qualité)</label>
+        <div class="stars" id="stars-s2-2">
+          <span class="star" onclick="rate('s2',2,1)">★</span>
+          <span class="star" onclick="rate('s2',2,2)">★</span>
+          <span class="star" onclick="rate('s2',2,3)">★</span>
+          <span class="star" onclick="rate('s2',2,4)">★</span>
+          <span class="star" onclick="rate('s2',2,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Gestion des objections</label>
+        <div class="stars" id="stars-s2-3">
+          <span class="star" onclick="rate('s2',3,1)">★</span>
+          <span class="star" onclick="rate('s2',3,2)">★</span>
+          <span class="star" onclick="rate('s2',3,3)">★</span>
+          <span class="star" onclick="rate('s2',3,4)">★</span>
+          <span class="star" onclick="rate('s2',3,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>MEDDPICC validés</label>
+        <div class="stars" id="stars-s2-4">
+          <span class="star" onclick="rate('s2',4,1)">★</span>
+          <span class="star" onclick="rate('s2',4,2)">★</span>
+          <span class="star" onclick="rate('s2',4,3)">★</span>
+          <span class="star" onclick="rate('s2',4,4)">★</span>
+          <span class="star" onclick="rate('s2',4,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Prochaine étape obtenue</label>
+        <div class="stars" id="stars-s2-5">
+          <span class="star" onclick="rate('s2',5,1)">★</span>
+          <span class="star" onclick="rate('s2',5,2)">★</span>
+          <span class="star" onclick="rate('s2',5,3)">★</span>
+          <span class="star" onclick="rate('s2',5,4)">★</span>
+          <span class="star" onclick="rate('s2',5,5)">★</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="score-display">
+      <div>
+        <div class="score-label">Score global</div>
+        <div style="font-size:0.8rem; color:#718096; margin-top:2px">Moyenne des 5 critères</div>
+      </div>
+      <div class="score-value" id="score-s2">–</div>
+    </div>
+
+    <h3 style="margin-top:16px">Commentaire général du formateur</h3>
+    <textarea class="notes-area" placeholder="Points forts, axes d'amélioration, comportements notables..."></textarea>
+  </div>
+
+</div>
+<!-- FIN SCÉNARIO 2 -->
+
+<!-- ===================== SCÉNARIO 3 : AZUR HABITAT ===================== -->
+<div id="s3" class="tab-content">
+
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-title">🏠 Laurent Ferreira – Azur Habitat</div>
+      <div class="scenario-subtitle">Responsable Communication · Bailleur social région PACA</div>
+      <div style="margin-top:10px">
+        <span class="badge badge-inbound">INBOUND</span>
+        <span class="badge badge-diff">Difficulté : 5/10</span>
+      </div>
+    </div>
+    <div class="diff-badge">
+      <div class="diff-num">5</div>
+      <div class="diff-label">/10 difficulté</div>
+    </div>
+  </div>
+
+  <!-- CONTEXTE SALES -->
+  <div class="section-title">📋 Contexte pour le commercial (avant l'appel)</div>
+  <div class="typeform-box">
+    <p>
+      <strong>Formulaire reçu il y a 2 jours – Typeform "Demande de devis"</strong><br><br>
+      <strong>Société :</strong> Azur Habitat – Bailleur social, 12 000 logements gérés en région PACA<br>
+      <strong>Contact :</strong> Laurent Ferreira, Responsable Communication<br>
+      <strong>Ville :</strong> Toulon + La Seyne-sur-Mer<br>
+      <strong>Type d'opération souhaitée :</strong> Distribution boîtes aux lettres<br>
+      <strong>Volume estimé :</strong> 15 000 à 20 000 exemplaires<br>
+      <strong>Budget :</strong> "Autour de 3 000€"<br>
+      <strong>Délai souhaité :</strong> "Dans le mois"<br>
+      <strong>Commentaire libre :</strong> <em>"On organise une journée portes ouvertes sur nos nouvelles résidences à Toulon et La Seyne. On veut prévenir les habitants du quartier. On a déjà fait ça en interne mais c'était compliqué à gérer."</em>
+    </p>
+  </div>
+
+  <!-- FICHE CLIENT -->
+  <div class="section-title">🎭 Fiche client – Pour le formateur (jouer Laurent)</div>
+  <div class="card blue">
+    <h2>👤 Qui est Laurent Ferreira ?</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="label">Poste</div><div class="value">Responsable Communication</div></div>
+      <div class="info-item"><div class="label">Âge estimé</div><div class="value">42 ans</div></div>
+      <div class="info-item"><div class="label">Ancienneté</div><div class="value">8 ans chez Azur Habitat</div></div>
+      <div class="info-item"><div class="label">Reporting à</div><div class="value">Directeur Général</div></div>
+    </div>
+
+    <h3>🏗️ Situation réelle (que le sales ne sait pas encore)</h3>
+    <ul style="font-size:0.88rem; color:#2d3748; line-height:2; padding-left:18px;">
+      <li>Journée portes ouvertes dans <strong>3 semaines exactement</strong> – date calée, non négociable</li>
+      <li>2 résidences concernées : <strong>Résidence Les Mimosas (Toulon)</strong> + <strong>Résidence du Littoral (La Seyne)</strong></li>
+      <li>Objectif : informer les habitants du quartier dans un rayon de <strong>500m</strong> autour de chaque résidence</li>
+      <li>L'an dernier : 3 bénévoles ont distribué des flyers à la main → <strong>épuisant, mal couvert, abandons</strong></li>
+      <li>Budget réel disponible : <strong>4 500€</strong> validé par le DG – Laurent a mis 3 000€ par réflexe de négociation</li>
+      <li>Le flyer est déjà créé par leur graphiste interne → <strong>fichier prêt à imprimer</strong></li>
+      <li>Décision : Laurent peut valider seul, le DG a déjà donné son accord de principe</li>
+      <li>Attente principale : <strong>simplicité d'exécution</strong> – il veut confier et ne plus y penser</li>
+    </ul>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <div class="card purple">
+    <h2>🧠 Comportement & Réactions situationnelles</h2>
+
+    <div class="behavior-item">
+      <div class="trigger">En ouverture d'appel</div>
+      <div class="reaction">Laurent est détendu et coopératif : <em>"Bonjour, oui j'ai rempli votre formulaire. On a un événement qui approche, j'ai besoin que ce soit simple."</em> – Il est dans une démarche active, pas besoin de le convaincre de l'intérêt. L'enjeu c'est de le rassurer sur la faisabilité.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial demande à voir le flyer ou à connaître le format</div>
+      <div class="reaction">Laurent est soulagé qu'on lui pose la question : <em>"Ah oui, on a déjà le fichier prêt, format A5 recto-verso. Je vous l'envoie quand vous voulez."</em> – Bonne question qui montre le professionnalisme.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial demande ce qui n'a pas marché l'an dernier</div>
+      <div class="reaction">Laurent lâche facilement : <em>"On avait demandé à des collègues de distribuer un samedi matin, deux ont abandonné au bout d'une heure. On a couvert peut-être 40% de la zone. C'était le bazar."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial propose un ciblage par zone précise (rayon autour des résidences)</div>
+      <div class="reaction">Intérêt fort : <em>"Ah vous pouvez cibler vraiment autour des résidences ? Parce que nous on voulait pas arroser tout Toulon non plus, juste le voisinage."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle de preuve de distribution / attestation</div>
+      <div class="reaction">Laurent est agréablement surpris : <em>"Ah vous faites ça ? Parce que mon DG va me demander si c'est bien parti. C'est un plus ça."</em> – Il n'y avait pas pensé mais ça répond à un besoin réel.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle budget avant d'avoir qualifié le besoin complet</div>
+      <div class="reaction">Laurent répond simplement : <em>"On a mis 3 000€ dans le formulaire mais honnêtement si c'est bien fait, on peut aller un peu au-delà."</em> – Il ne résiste pas beaucoup, à condition que la valeur soit claire.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial confirme une faisabilité dans les 3 semaines</div>
+      <div class="reaction">Laurent devient très engagé : <em>"Parfait, dites-moi ce qu'il vous faut de mon côté et on y va."</em> – Il est prêt à signer rapidement si la confiance est établie.</div>
+    </div>
+  </div>
+
+  <!-- OBJECTIONS -->
+  <div class="card">
+    <h2>💬 Objections clés</h2>
+
+    <div class="objection-item">
+      <div class="obj-text">"3 000€ c'est notre enveloppe, on peut pas aller au-delà."</div>
+      <div class="obj-context">Réflexe de négociation. Il a 4 500€ validés. Si le commercial justifie la valeur (couverture totale, attestation, pas de stress logistique), Laurent lâche facilement.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"On a déjà le flyer prêt, on veut juste la distribution."</div>
+      <div class="obj-context">Il ne veut pas de complexité. Le commercial doit valider que le fichier est aux bonnes normes impression sans en faire un problème.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"3 semaines c'est faisable pour vous ?"</div>
+      <div class="obj-context">Pas vraiment une objection, plutôt une validation. Si le commercial confirme avec assurance et donne un rétro-planning clair → deal quasi-acté.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Comment je sais que les flyers ont bien été distribués ?"</div>
+      <div class="obj-context">Sort spontanément si on ne l'aborde pas. Très important pour lui vis-à-vis de son DG. Attestation de distribution + photos = objection levée.</div>
+    </div>
+  </div>
+
+  <!-- MEDDPICC -->
+  <div class="card green">
+    <h2>📊 MEDDPICC – Ce que le commercial doit valider</h2>
+    <div class="meddpicc-grid">
+      <div class="meddpicc-item"><div class="meddpicc-letter">M</div><div class="meddpicc-label">Metrics</div><div class="meddpicc-value">Nb de foyers couverts dans rayon 500m autour des 2 résidences</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">E</div><div class="meddpicc-label">Economic Buyer</div><div class="meddpicc-value">Laurent seul – DG déjà validé en amont</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Criteria</div><div class="meddpicc-value">Faisabilité 3 sem + couverture zone précise + preuve distrib</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Process</div><div class="meddpicc-value">Devis → validation Laurent → go immédiat</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">P</div><div class="meddpicc-label">Pain</div><div class="meddpicc-value">Expérience interne catastrophique l'an dernier, 40% couverture</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">I</div><div class="meddpicc-label">Implication</div><div class="meddpicc-value">Faible participation à la JPO = mauvaise image auprès DG + habitants</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Champion</div><div class="meddpicc-value">Laurent lui-même – très motivé à externaliser</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Competition</div><div class="meddpicc-value">Inaction (refaire en interne) + éventuellement La Poste</div></div>
+    </div>
+  </div>
+
+  <!-- SPIN -->
+  <div class="card yellow">
+    <h2>🔄 Méthode SPIN – Questions clés à poser</h2>
+    <div class="spin-section">
+
+      <div class="spin-category situation">
+        <h4>S – Situation</h4>
+        <div class="spin-q">"Vos 2 résidences sont sur quelles zones exactement – vous avez une idée du nombre de foyers autour ?"</div>
+        <div class="spin-q">"Le flyer est déjà créé ou vous avez besoin qu'on s'en occupe aussi ?"</div>
+        <div class="spin-q">"C'est la première fois que vous externalisez la distribution ou vous avez déjà travaillé avec une agence ?"</div>
+      </div>
+
+      <div class="spin-category problem">
+        <h4>P – Problème</h4>
+        <div class="spin-q">"L'an dernier vous avez fait comment pour la distribution – et qu'est-ce qui a posé problème ?"</div>
+        <div class="spin-q">"Vous avez une idée du taux de couverture que vous avez réellement atteint sur la zone ?"</div>
+        <div class="spin-q">"Aujourd'hui vous avez un moyen de vérifier que les flyers ont bien été distribués une fois que c'est parti ?"</div>
+      </div>
+
+      <div class="spin-category implication">
+        <h4>I – Implication</h4>
+        <div class="spin-q">"Si on refait la même chose qu'une couverture partielle, ça donne quoi pour la fréquentation de la journée portes ouvertes ?"</div>
+        <div class="spin-q">"Votre DG, il attend quoi comme résultat de cette journée ? Il y a des objectifs de visites ou de candidatures ?"</div>
+        <div class="spin-q">"Si la JPO fait un flop faute de communication, ça impacte quoi pour vous concrètement ?"</div>
+      </div>
+
+      <div class="spin-category need">
+        <h4>N – Need Payoff</h4>
+        <div class="spin-q">"Si on vous garantit une couverture à 100% dans le rayon autour des résidences avec une attestation de distribution – ça résout votre problème de l'an dernier ?"</div>
+        <div class="spin-q">"Vous préférez qu'on gère aussi l'impression ou vous avez déjà un imprimeur ?"</div>
+        <div class="spin-q">"Si on vous envoie un devis aujourd'hui avec un rétro-planning sur 3 semaines, vous pouvez valider d'ici jeudi ?"</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTES POST-CALL -->
+  <div class="section-title">✍️ Notes post-call – Débriefing SPIN</div>
+  <div class="card">
+    <h2>📝 Ce que le commercial a découvert</h2>
+
+    <h3>Situation identifiée</h3>
+    <textarea class="notes-area" placeholder="Ex : 2 résidences, Toulon + La Seyne, JPO dans 3 sem, fichier flyer prêt..."></textarea>
+
+    <h3>Problèmes mis en lumière</h3>
+    <textarea class="notes-area" placeholder="Ex : Distribution interne catastrophique l'an dernier, 40% couverture, pas de preuve..."></textarea>
+
+    <h3>Implications explorées</h3>
+    <textarea class="notes-area" placeholder="Ex : Faible fréquentation JPO = mauvaise image DG, objectifs de candidatures à tenir..."></textarea>
+
+    <h3>Need Payoff – Projection valeur</h3>
+    <textarea class="notes-area" placeholder="Ex : Très sensible à l'attestation de distribution, veut simplicité totale..."></textarea>
+
+    <h3>Prochaine étape convenue</h3>
+    <textarea class="notes-area" placeholder="Ex : Devis + rétro-planning envoyé aujourd'hui, validation Laurent jeudi..."></textarea>
+  </div>
+
+  <!-- NOTATION -->
+  <div class="section-title">⭐ Notation de la simulation</div>
+  <div class="card">
+    <h2>🏆 Évaluation du commercial</h2>
+    <div class="notation-grid">
+
+      <div class="notation-item">
+        <label>Découverte du contexte</label>
+        <div class="stars" id="stars-s3-1">
+          <span class="star" onclick="rate('s3',1,1)">★</span>
+          <span class="star" onclick="rate('s3',1,2)">★</span>
+          <span class="star" onclick="rate('s3',1,3)">★</span>
+          <span class="star" onclick="rate('s3',1,4)">★</span>
+          <span class="star" onclick="rate('s3',1,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Questions SPIN (qualité)</label>
+        <div class="stars" id="stars-s3-2">
+          <span class="star" onclick="rate('s3',2,1)">★</span>
+          <span class="star" onclick="rate('s3',2,2)">★</span>
+          <span class="star" onclick="rate('s3',2,3)">★</span>
+          <span class="star" onclick="rate('s3',2,4)">★</span>
+          <span class="star" onclick="rate('s3',2,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Gestion des objections</label>
+        <div class="stars" id="stars-s3-3">
+          <span class="star" onclick="rate('s3',3,1)">★</span>
+          <span class="star" onclick="rate('s3',3,2)">★</span>
+          <span class="star" onclick="rate('s3',3,3)">★</span>
+          <span class="star" onclick="rate('s3',3,4)">★</span>
+          <span class="star" onclick="rate('s3',3,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>MEDDPICC validés</label>
+        <div class="stars" id="stars-s3-4">
+          <span class="star" onclick="rate('s3',4,1)">★</span>
+          <span class="star" onclick="rate('s3',4,2)">★</span>
+          <span class="star" onclick="rate('s3',4,3)">★</span>
+          <span class="star" onclick="rate('s3',4,4)">★</span>
+          <span class="star" onclick="rate('s3',4,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Prochaine étape obtenue</label>
+        <div class="stars" id="stars-s3-5">
+          <span class="star" onclick="rate('s3',5,1)">★</span>
+          <span class="star" onclick="rate('s3',5,2)">★</span>
+          <span class="star" onclick="rate('s3',5,3)">★</span>
+          <span class="star" onclick="rate('s3',5,4)">★</span>
+          <span class="star" onclick="rate('s3',5,5)">★</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="score-display">
+      <div>
+        <div class="score-label">Score global</div>
+        <div style="font-size:0.8rem; color:#718096; margin-top:2px">Moyenne des 5 critères</div>
+      </div>
+      <div class="score-value" id="score-s3">–</div>
+    </div>
+
+    <h3 style="margin-top:16px">Commentaire général du formateur</h3>
+    <textarea class="notes-area" placeholder="Points forts, axes d'amélioration, comportements notables..."></textarea>
+  </div>
+
+</div>
+<!-- FIN SCÉNARIO 3 -->
+
+
+<!-- ===================== SCÉNARIO 4 : FITZONE ===================== -->
+<div id="s4" class="tab-content">
+
+  <div class="scenario-header">
+    <div>
+      <div class="scenario-title">💪 Romain Pellier – FitZone Lyon</div>
+      <div class="scenario-subtitle">Responsable Marketing · Chaîne de salles de sport</div>
+      <div style="margin-top:10px">
+        <span class="badge badge-inbound">INBOUND</span>
+        <span class="badge badge-diff">Difficulté : 6/10</span>
+      </div>
+    </div>
+    <div class="diff-badge">
+      <div class="diff-num">6</div>
+      <div class="diff-label">/10 difficulté</div>
+    </div>
+  </div>
+
+  <!-- CONTEXTE SALES -->
+  <div class="section-title">📋 Contexte pour le commercial (avant l'appel)</div>
+  <div class="typeform-box">
+    <p>
+      <strong>Formulaire reçu il y a 3 jours – Typeform "Demande de devis"</strong><br><br>
+      <strong>Société :</strong> FitZone – Chaîne de salles de sport, 3 établissements (Lyon 3ème, Lyon 6ème, Villeurbanne)<br>
+      <strong>Contact :</strong> Romain Pellier, Responsable Marketing<br>
+      <strong>Ville :</strong> Lyon 3ème + Lyon 6ème (priorité)<br>
+      <strong>Type d'opération souhaitée :</strong> Distribution hand-to-hand<br>
+      <strong>Volume estimé :</strong> "On sait pas trop, 10 000 ?"<br>
+      <strong>Budget :</strong> "Autour de 1 500€"<br>
+      <strong>Délai souhaité :</strong> "Avant janvier si possible"<br>
+      <strong>Commentaire libre :</strong> <em>"On veut distribuer des flyers avec une offre d'essai gratuit pour ramener des gens en salle. On a déjà fait du hand-to-hand mais on sait pas si ça a marché."</em>
+    </p>
+  </div>
+
+  <!-- FICHE CLIENT -->
+  <div class="section-title">🎭 Fiche client – Pour le formateur (jouer Romain)</div>
+  <div class="card blue">
+    <h2>👤 Qui est Romain Pellier ?</h2>
+    <div class="info-grid">
+      <div class="info-item"><div class="label">Poste</div><div class="value">Responsable Marketing</div></div>
+      <div class="info-item"><div class="label">Âge estimé</div><div class="value">31 ans</div></div>
+      <div class="info-item"><div class="label">Ancienneté</div><div class="value">2 ans chez FitZone</div></div>
+      <div class="info-item"><div class="label">Reporting à</div><div class="value">Gérant associé (Thomas)</div></div>
+    </div>
+
+    <h3>💪 Situation réelle (que le sales ne sait pas encore)</h3>
+    <ul style="font-size:0.88rem; color:#2d3748; line-height:2; padding-left:18px;">
+      <li>Janvier = pic d'inscriptions salle de sport → <strong>fenêtre critique de 3 semaines</strong> (2 jan – 20 jan)</li>
+      <li>L'an dernier : 2 employés ont distribué des flyers devant les salles → <strong>aucun tracking, impossible de savoir l'impact</strong></li>
+      <li>Objectif réel : générer des <strong>essais gratuits trackables</strong> (code promo unique par canal)</li>
+      <li>Cible souhaitée : actifs 25-40 ans, à proximité des salles + zones de flux (métro, marchés, parcs)</li>
+      <li>Budget réel : <strong>3 500€</strong> validable par le gérant si Romain présente un plan solide – il a mis 1 500€ dans le formulaire par prudence</li>
+      <li>Romain ne décide pas seul : <strong>Thomas le gérant valide les dépenses au-delà de 500€</strong></li>
+      <li>Flyer non encore créé → potentiellement besoin de conseil sur le message et l'offre</li>
+      <li>Inquiétude principale : <em>"dépenser de l'argent et pas savoir si ça sert à quelque chose"</em></li>
+    </ul>
+  </div>
+
+  <!-- COMPORTEMENT -->
+  <div class="card purple">
+    <h2>🧠 Comportement & Réactions situationnelles</h2>
+
+    <div class="behavior-item">
+      <div class="trigger">En ouverture d'appel</div>
+      <div class="reaction">Romain est sympa et décontracté : <em>"Ouais bonjour, j'ai rempli votre truc sur le site. On cherche à faire du hand-to-hand pour janvier, la période creuse elle arrive vite."</em> – Ton ouvert, mais flou sur ce qu'il veut vraiment.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial demande comment ils ont mesuré leurs actions passées</div>
+      <div class="reaction">Romain rit légèrement : <em>"Honnêtement on a pas mesuré du tout. Mes collègues ont distribué, on a eu quelques inscriptions en janvier mais je sais pas si c'est grâce aux flyers ou juste l'effet bonne résolution."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial propose un code promo unique par campagne pour tracker</div>
+      <div class="reaction">Romain s'anime vraiment : <em>"Ah ouais ça c'est une bonne idée ! Comme ça je peux montrer à Thomas que ça marche. Parce que là j'ai du mal à justifier le budget marketing."</em> – Point de déclenchement fort.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial demande qui valide le budget final</div>
+      <div class="reaction">Romain est transparent : <em>"C'est Thomas, le gérant. Moi je lui propose, lui il valide. Mais si j'arrive avec un truc structuré il dit rarement non."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle de ciblage (zones, horaires, profils)</div>
+      <div class="reaction">Romain est partant mais flou : <em>"Ouais on avait pas réfléchi à ça… vous conseilleriez quoi ? Devant les métros ? Les marchés du samedi ?"</em> – Il attend d'être guidé, c'est une opportunité de positioning expert.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial mentionne le budget de 1 500€</div>
+      <div class="reaction">Romain est honnête si la confiance est là : <em>"Le 1 500€ c'était pour pas paraître fou. Si le plan est solide on peut monter à 3 000-3 500€, Thomas sera okay."</em></div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial parle prix sans avoir structuré le plan</div>
+      <div class="reaction">Romain freine : <em>"Attendez, c'est cher pour du papier quand même… qu'est-ce qui me garantit que ça va ramener des gens ?"</em> – Objection classique si la valeur n'a pas été posée avant.</div>
+    </div>
+
+    <div class="behavior-item">
+      <div class="trigger">Si le commercial propose un plan complet (zones, horaires, code tracking, reporting)</div>
+      <div class="reaction">Romain conclut positivement : <em>"Ok ça me parle. Envoyez-moi ça par écrit, je montre à Thomas et on revient vers vous rapidement."</em></div>
+    </div>
+  </div>
+
+  <!-- OBJECTIONS -->
+  <div class="card">
+    <h2>💬 Objections clés</h2>
+
+    <div class="objection-item">
+      <div class="obj-text">"C'est cher pour du papier."</div>
+      <div class="obj-context">Sort quand le prix arrive avant la valeur. À traiter en recentrant sur le ROI : combien vaut une inscription à l'année chez FitZone ? Si 1 abonnement = 400€/an, 10 inscrits = 4 000€ générés.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"Comment je sais si ça marche ?"</div>
+      <div class="obj-context">Son obsession. Code promo unique + comptage des essais utilisés = réponse concrète. C'est aussi ce qui lui permet de convaincre Thomas.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"1 500€ c'est notre budget max."</div>
+      <div class="obj-context">Faux. Budget réel 3 500€ validable. Débloquer en montrant le plan structuré et en impliquant Thomas dans la conversation.</div>
+    </div>
+
+    <div class="objection-item">
+      <div class="obj-text">"On avait pensé faire ça nous-mêmes comme l'an dernier."</div>
+      <div class="obj-context">Objection de confort. Rebond : l'an dernier vous avez pas pu mesurer, vos équipes ont été mobilisées sur autre chose, et la couverture était partielle.</div>
+    </div>
+  </div>
+
+  <!-- MEDDPICC -->
+  <div class="card green">
+    <h2>📊 MEDDPICC – Ce que le commercial doit valider</h2>
+    <div class="meddpicc-grid">
+      <div class="meddpicc-item"><div class="meddpicc-letter">M</div><div class="meddpicc-label">Metrics</div><div class="meddpicc-value">Nb d'essais gratuits activés via code promo / inscriptions générées</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">E</div><div class="meddpicc-label">Economic Buyer</div><div class="meddpicc-value">Thomas le gérant – Romain propose, Thomas valide au-delà de 500€</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Criteria</div><div class="meddpicc-value">Tracking mesurable + ciblage zones flux + opérationnel avant 2 jan</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">D</div><div class="meddpicc-label">Decision Process</div><div class="meddpicc-value">Romain présente à Thomas → validation → démarrage J-15</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">P</div><div class="meddpicc-label">Pain</div><div class="meddpicc-value">Pic janvier non exploité l'an dernier, ROI inconnu, budget injustifiable</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">I</div><div class="meddpicc-label">Implication</div><div class="meddpicc-value">Rater janvier = passer à côté des 30% d'inscriptions annuelles en 3 semaines</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Champion</div><div class="meddpicc-value">Romain – motivé si on lui donne les arguments pour convaincre Thomas</div></div>
+      <div class="meddpicc-item"><div class="meddpicc-letter">C</div><div class="meddpicc-label">Competition</div><div class="meddpicc-value">Inaction (refaire en interne) + réseaux sociaux payants</div></div>
+    </div>
+  </div>
+
+  <!-- SPIN -->
+  <div class="card yellow">
+    <h2>🔄 Méthode SPIN – Questions clés à poser</h2>
+    <div class="spin-section">
+
+      <div class="spin-category situation">
+        <h4>S – Situation</h4>
+        <div class="spin-q">"Vos 3 salles sont sur quelles zones exactement – et c'est quoi votre zone de chalandise naturelle pour chaque salle ?"</div>
+        <div class="spin-q">"L'offre essai gratuit, elle est déjà définie ou vous êtes encore en train de la construire ?"</div>
+        <div class="spin-q">"Aujourd'hui votre flyer est prêt ou vous avez encore besoin de le créer ?"</div>
+      </div>
+
+      <div class="spin-category problem">
+        <h4>P – Problème</h4>
+        <div class="spin-q">"L'an dernier vous avez fait comment – et vous avez réussi à mesurer ce que ça avait ramené ?"</div>
+        <div class="spin-q">"Quand vous présentez votre budget marketing à votre gérant, vous avez quoi comme données pour justifier le ROI ?"</div>
+        <div class="spin-q">"Est-ce que vous savez aujourd'hui d'où viennent vos nouvelles inscriptions en janvier – bouche-à-oreille, réseaux, terrain ?"</div>
+      </div>
+
+      <div class="spin-category implication">
+        <h4>I – Implication</h4>
+        <div class="spin-q">"Janvier c'est quelle part de vos inscriptions annuelles – c'est une fenêtre critique pour vous ?"</div>
+        <div class="spin-q">"Si vous refaites comme l'an dernier sans tracking, comment vous justifiez l'investissement à Thomas ?"</div>
+        <div class="spin-q">"Si vous passez à côté de la fenêtre janvier, il y a d'autres moments dans l'année aussi porteurs ?"</div>
+      </div>
+
+      <div class="spin-category need">
+        <h4>N – Need Payoff</h4>
+        <div class="spin-q">"Si chaque flyer distribué a un code promo unique et que vous voyez en temps réel combien d'essais ont été activés – ça change quoi pour vous ?"</div>
+        <div class="spin-q">"Un plan avec zones ciblées, horaires de flux, code tracking et rapport à J+7 – c'est le genre de chose que Thomas validerait ?"</div>
+        <div class="spin-q">"Si on vous montre qu'une inscription FitZone vaut X€ sur l'année et que la campagne peut en générer Y – on est dans le bon ordre de grandeur pour votre budget ?"</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NOTES POST-CALL -->
+  <div class="section-title">✍️ Notes post-call – Débriefing SPIN</div>
+  <div class="card">
+    <h2>📝 Ce que le commercial a découvert</h2>
+
+    <h3>Situation identifiée</h3>
+    <textarea class="notes-area" placeholder="Ex : 3 salles Lyon, pic janvier critique, flyer pas encore créé, décision via Thomas..."></textarea>
+
+    <h3>Problèmes mis en lumière</h3>
+    <textarea class="notes-area" placeholder="Ex : Aucun tracking l'an dernier, impossible de justifier ROI à Thomas, budget sous-estimé..."></textarea>
+
+    <h3>Implications explorées</h3>
+    <textarea class="notes-area" placeholder="Ex : Janvier = 30% inscriptions annuelles, fenêtre de 3 semaines max, rater = impact fort..."></textarea>
+
+    <h3>Need Payoff – Projection valeur</h3>
+    <textarea class="notes-area" placeholder="Ex : Très sensible au code tracking, veut un plan structuré pour convaincre Thomas..."></textarea>
+
+    <h3>Prochaine étape convenue</h3>
+    <textarea class="notes-area" placeholder="Ex : Proposition complète envoyée + call à 3 (Romain + Thomas) en fin de semaine..."></textarea>
+  </div>
+
+  <!-- NOTATION -->
+  <div class="section-title">⭐ Notation de la simulation</div>
+  <div class="card">
+    <h2>🏆 Évaluation du commercial</h2>
+    <div class="notation-grid">
+
+      <div class="notation-item">
+        <label>Découverte du contexte</label>
+        <div class="stars" id="stars-s4-1">
+          <span class="star" onclick="rate('s4',1,1)">★</span>
+          <span class="star" onclick="rate('s4',1,2)">★</span>
+          <span class="star" onclick="rate('s4',1,3)">★</span>
+          <span class="star" onclick="rate('s4',1,4)">★</span>
+          <span class="star" onclick="rate('s4',1,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Questions SPIN (qualité)</label>
+        <div class="stars" id="stars-s4-2">
+          <span class="star" onclick="rate('s4',2,1)">★</span>
+          <span class="star" onclick="rate('s4',2,2)">★</span>
+          <span class="star" onclick="rate('s4',2,3)">★</span>
+          <span class="star" onclick="rate('s4',2,4)">★</span>
+          <span class="star" onclick="rate('s4',2,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Gestion des objections</label>
+        <div class="stars" id="stars-s4-3">
+          <span class="star" onclick="rate('s4',3,1)">★</span>
+          <span class="star" onclick="rate('s4',3,2)">★</span>
+          <span class="star" onclick="rate('s4',3,3)">★</span>
+          <span class="star" onclick="rate('s4',3,4)">★</span>
+          <span class="star" onclick="rate('s4',3,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>MEDDPICC validés</label>
+        <div class="stars" id="stars-s4-4">
+          <span class="star" onclick="rate('s4',4,1)">★</span>
+          <span class="star" onclick="rate('s4',4,2)">★</span>
+          <span class="star" onclick="rate('s4',4,3)">★</span>
+          <span class="star" onclick="rate('s4',4,4)">★</span>
+          <span class="star" onclick="rate('s4',4,5)">★</span>
+        </div>
+      </div>
+
+      <div class="notation-item">
+        <label>Prochaine étape obtenue</label>
+        <div class="stars" id="stars-s4-5">
+          <span class="star" onclick="rate('s4',5,1)">★</span>
+          <span class="star" onclick="rate('s4',5,2)">★</span>
+          <span class="star" onclick="rate('s4',5,3)">★</span>
+          <span class="star" onclick="rate('s4',5,4)">★</span>
+          <span class="star" onclick="rate('s4',5,5)">★</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="score-display">
+      <div>
+        <div class="score-label">Score global</div>
+        <div style="font-size:0.8rem; color:#718096; margin-top:2px">Moyenne des 5 critères</div>
+      </div>
+      <div class="score-value" id="score-s4">–</div>
+    </div>
+
+    <h3 style="margin-top:16px">Commentaire général du formateur</h3>
+    <textarea class="notes-area" placeholder="Points forts, axes d'amélioration, comportements notables..."></textarea>
+  </div>
+
+</div>
+<!-- FIN SCÉNARIO 4 -->
+</div><!-- fin wrapper -->
+
+<script>
+// ===================== ONGLETS =====================
+function showTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===================== NOTATION ÉTOILES =====================
+const ratings = {};
+
+function rate(scenario, criterion, value) {
+  const key = scenario + '-' + criterion;
+  ratings[key] = value;
+
+  const starsContainer = document.getElementById('stars-' + key);
+  const stars = starsContainer.querySelectorAll('.star');
+  stars.forEach((star, index) => {
+    if (index < value) {
+      star.classList.add('active');
+    } else {
+      star.classList.remove('active');
+    }
+  });
+
+  updateScore(scenario);
+}
+
+function updateScore(scenario) {
+  let total = 0;
+  let count = 0;
+
+  for (let i = 1; i <= 5; i++) {
+    const key = scenario + '-' + i;
+    if (ratings[key] !== undefined) {
+      total += ratings[key];
+      count++;
+    }
+  }
+
+  const scoreEl = document.getElementById('score-' + scenario);
+
+  if (count === 0) {
+    scoreEl.textContent = '–';
+    scoreEl.style.color = '#718096';
+    return;
+  }
+
+  const avg = total / count;
+  const rounded = Math.round(avg * 10) / 10;
+  scoreEl.textContent = rounded + '/5';
+
+  if (avg >= 4) {
+    scoreEl.style.color = '#38a169';
+  } else if (avg >= 2.5) {
+    scoreEl.style.color = '#dd6b20';
+  } else {
+    scoreEl.style.color = '#e53e3e';
+  }
+}
+
+// ===================== INIT =====================
+document.addEventListener('DOMContentLoaded', function() {
+  // Onglet 1 actif par défaut
+  const firstTab = document.querySelector('.tab-content');
+  const firstBtn = document.querySelector('.tab-btn');
+  if (firstTab) firstTab.classList.add('active');
+  if (firstBtn) firstBtn.classList.add('active');
+});
+</script>
+
+</body>
+</html>
